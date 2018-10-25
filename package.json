@@ -1,0 +1,26 @@
+{
+  "name": "timed-state-chain",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LeePresswood/timed-state-chain.git"
+  },
+  "keywords": [],
+  "author": "Lee Presswood <LeePresswood@gmail.com> (https://twitter.com/Lee_Presswood)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LeePresswood/timed-state-chain/issues"
+  },
+  "homepage": "https://github.com/LeePresswood/timed-state-chain#readme",
+  "dependencies": {
+    "crypto-js": "^3.1.9-1"
+  },
+  "devDependencies": {
+    "jest": "^23.6.0"
+  }
+}
