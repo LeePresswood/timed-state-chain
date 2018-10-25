@@ -54,5 +54,25 @@ describe("Block", () => {
 
             expect(block1.previousHash).toBeNull();
         });
+
+        test("nonce starts as 0", () => {
+            const block1 = new Block(1, new Date(), "abc");
+            const block2 = new Block(2, new Date(), "abcd");
+            const block3 = new Block(3, new Date(), "abcde");
+
+            expect(block1.nonce).toBe(0);
+            expect(block2.nonce).toBe(0);
+            expect(block3.nonce).toBe(0);
+        });
+
+        test("hash is calculated", () => {
+            const block1 = new Block(1, new Date(), "abc");
+            const block2 = new Block(2, new Date(), "abcd");
+            const block3 = new Block(3, new Date(), "abcde");
+
+            expect(block1.hash.length).toBe(64);
+            expect(block2.hash.length).toBe(64);
+            expect(block3.hash.length).toBe(64);
+        });
     });
 });
