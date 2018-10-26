@@ -14,7 +14,13 @@ module.exports.Block = class {
     }
 
     calculateHash() {
-        return SHA256().toString();
+        return SHA256(
+            this.index +
+            this.state +
+            this.timestamp +
+            this.previousHash +
+            this.nonce
+        ).toString();
     }
 };
 

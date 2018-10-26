@@ -111,9 +111,49 @@ describe("Block", () => {
             const block2 = new Block(2, {}, new Date(), "abcd");
             const block3 = new Block(3, {}, new Date(), "abcde");
 
-            expect(block1.hash.length).toBe(64);
-            expect(block2.hash.length).toBe(64);
-            expect(block3.hash.length).toBe(64);
+            expect(block1.hash).toHaveLength(64);
+            expect(block2.hash).toHaveLength(64);
+            expect(block3.hash).toHaveLength(64);
+        });
+    });
+
+    describe("calculateHash", () => {
+        test("hash is string", () => {
+            const hash = new Block(1).calculateHash();
+
+            expect(typeof (hash) === "string").toBe(true);
+        });
+
+        test("hash is length 64", () => {
+            const hash = new Block(1).calculateHash();
+
+            expect(hash).toHaveLength(64);
+        });
+
+        test("hashes of two of the same objects are equal", () => {
+            const block = new Block(1);
+            const hash1 = block.calculateHash();
+            const hash2 = block.calculateHash();
+
+            expect(hash1).toBe(hash2);
+        });
+
+        test("hashes of two of different blocks with the same data are equal", () => {
+            const block1 = new Block(1, {}, 123);
+            const block2 = new Block(1, {}, 123);
+            const hash1 = block1.calculateHash();
+            const hash2 = block2.calculateHash();
+
+            expect(hash1 === hash2).toBe(true);
+        });
+
+        test("hashes of two of different blocks with different data are not equal", () => {
+            const block1 = new Block(1, {}, 123);
+            const block2 = new Block(11, {}, 123);
+            const hash1 = block1.calculateHash();
+            const hash2 = block2.calculateHash();
+
+            expect(hash1 === hash2).toBe(false);
         });
     });
 });
