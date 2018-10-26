@@ -1,5 +1,6 @@
 const {
-    Block
+    Block,
+    getGenesisBlock
 } = require('../src/index');
 
 describe("Block", () => {
@@ -15,9 +16,49 @@ describe("Block", () => {
         });
 
         test("uses passed in timestamp", () => {
-            const block1 = new Block(1, new Date(2018, 9, 24));
-            const block2 = new Block(2, new Date(2018, 10, 25));
-            const block3 = new Block(3, new Date(2018, 11, 26));
+            const block1 = new Block(1, {}, new Date(2018, 9, 24));
+            const block2 = new Block(2, {}, new Date(2018, 10, 25));
+            const block3 = new Block(3, {}, new Date(2018, 11, 26));
+
+            expect(block1.timestamp.getFullYear()).toBe(2018);
+            expect(block1.timestamp.getMonth()).toBe(9);
+            expect(block1.timestamp.getDate()).toBe(24);
+
+            expect(block2.timestamp.getFullYear()).toBe(2018);
+            expect(block2.timestamp.getMonth()).toBe(10);
+            expect(block2.timestamp.getDate()).toBe(25);
+
+            expect(block3.timestamp.getFullYear()).toBe(2018);
+            expect(block3.timestamp.getMonth()).toBe(11);
+            expect(block3.timestamp.getDate()).toBe(26);
+        });
+
+        test("uses passed in state", () => {
+            const block1 = new Block(1, {
+                a: 1
+            }, new Date(2018, 9, 24));
+            const block2 = new Block(2, {
+                b: 2
+            }, new Date(2018, 10, 25));
+            const block3 = new Block(3, {
+                c: 3
+            }, new Date(2018, 11, 26));
+
+            expect(block1.state.a).toBe(1);
+            expect(block2.state.b).toBe(2);
+            expect(block3.state.c).toBe(3);
+        });
+
+        test("provides empty state if not provided one", () => {
+            const block1 = new Block(1);
+
+            expect(block1.state).toEqual({});
+        });
+
+        test("uses passed in timestamp", () => {
+            const block1 = new Block(1, {}, new Date(2018, 9, 24));
+            const block2 = new Block(2, {}, new Date(2018, 10, 25));
+            const block3 = new Block(3, {}, new Date(2018, 11, 26));
 
             expect(block1.timestamp.getFullYear()).toBe(2018);
             expect(block1.timestamp.getMonth()).toBe(9);
@@ -40,9 +81,9 @@ describe("Block", () => {
         });
 
         test("uses passed in previousHash", () => {
-            const block1 = new Block(1, new Date(), "abc");
-            const block2 = new Block(2, new Date(), "abcd");
-            const block3 = new Block(3, new Date(), "abcde");
+            const block1 = new Block(1, {}, new Date(), "abc");
+            const block2 = new Block(2, {}, new Date(), "abcd");
+            const block3 = new Block(3, {}, new Date(), "abcde");
 
             expect(block1.previousHash).toBe("abc");
             expect(block2.previousHash).toBe("abcd");
@@ -56,9 +97,9 @@ describe("Block", () => {
         });
 
         test("nonce starts as 0", () => {
-            const block1 = new Block(1, new Date(), "abc");
-            const block2 = new Block(2, new Date(), "abcd");
-            const block3 = new Block(3, new Date(), "abcde");
+            const block1 = new Block(1, {}, new Date(), "abc");
+            const block2 = new Block(2, {}, new Date(), "abcd");
+            const block3 = new Block(3, {}, new Date(), "abcde");
 
             expect(block1.nonce).toBe(0);
             expect(block2.nonce).toBe(0);
@@ -66,9 +107,9 @@ describe("Block", () => {
         });
 
         test("hash is calculated", () => {
-            const block1 = new Block(1, new Date(), "abc");
-            const block2 = new Block(2, new Date(), "abcd");
-            const block3 = new Block(3, new Date(), "abcde");
+            const block1 = new Block(1, {}, new Date(), "abc");
+            const block2 = new Block(2, {}, new Date(), "abcd");
+            const block3 = new Block(3, {}, new Date(), "abcde");
 
             expect(block1.hash.length).toBe(64);
             expect(block2.hash.length).toBe(64);
