@@ -9,6 +9,9 @@ module.exports.Block = class {
         this.timestamp = timestamp;
         this.previousHash = previousHash;
 
+        this.previous = null;
+        this.next = null;
+
         this.nonce = 0;
         this.hash = this.calculateHash();
     }
@@ -22,8 +25,36 @@ module.exports.Block = class {
             this.nonce
         ).toString();
     }
+
+    static isValid(block) {
+        if (!block || block.index !== 0 && !block.previous) {
+            return false;
+        }
+
+        if (block.previous.calculateHash() !== block.previousHash) {
+            return false;
+        }
+
+        if (block.previous.calculateHash() !== block.previous.hash) {
+            return false;
+        }
+
+        if (block.calculateHash() !== block.hash) {
+            return false;
+        }
+
+        return true;
+    }
+
+    static mineNewBlock(block) {
+
+    }
+
+    static getGenesisBlock(state) {
+        return new this(0, state);
+    }
 };
 
-module.exports.getGenesisBlock = (state) => {
-    return new this.Block(0, state)
-};
+// var blockchain = [
+//     getGenesisBlock()
+// ];

@@ -1,10 +1,9 @@
 const {
-    Block,
-    getGenesisBlock
+    Block
 } = require('../src/index');
 
 describe("Block", () => {
-    describe("constructor", () => {
+    describe("-- constructor", () => {
         test("uses passed in index", () => {
             const block1 = new Block(0);
             const block2 = new Block(10);
@@ -117,7 +116,7 @@ describe("Block", () => {
         });
     });
 
-    describe("calculateHash", () => {
+    describe("-- calculateHash", () => {
         test("hash is string", () => {
             const hash = new Block(1).calculateHash();
 
@@ -156,47 +155,51 @@ describe("Block", () => {
             expect(hash1).not.toBe(hash2);
         });
     });
-});
 
-describe("getGenesisBlock", () => {
-    test("returns block", () => {
-        const genesisBlock = getGenesisBlock();
+    describe("-- mineNewBlock", () => {
 
-        expect(genesisBlock instanceof Block).toBe(true);
     });
 
-    test("index is 0", () => {
-        const genesisBlock = getGenesisBlock();
+    describe("-- getGenesisBlock", () => {
+        test("returns block", () => {
+            const genesisBlock = Block.getGenesisBlock();
 
-        expect(genesisBlock.index).toBe(0);
-    });
-
-    test("state is empty object if none is passed in", () => {
-        const genesisBlock = getGenesisBlock();
-
-        expect(genesisBlock.state).toMatchObject({});
-    });
-
-    test("state uses passed in object", () => {
-        const genesisBlock = getGenesisBlock({
-            abc: 123
+            expect(genesisBlock instanceof Block).toBe(true);
         });
 
-        expect(genesisBlock.state).toMatchObject({
-            abc: 123
+        test("index is 0", () => {
+            const genesisBlock = Block.getGenesisBlock();
+
+            expect(genesisBlock.index).toBe(0);
         });
-    });
 
-    test("timestamp uses current time", () => {
-        const genesisBlock = getGenesisBlock();
-        const laterTime = Date.now() + 1;
+        test("state is empty object if none is passed in", () => {
+            const genesisBlock = Block.getGenesisBlock();
 
-        expect(genesisBlock.timestamp).toBeLessThan(laterTime);
-    });
+            expect(genesisBlock.state).toMatchObject({});
+        });
 
-    test("previousHash is null", () => {
-        const genesisBlock = getGenesisBlock();
+        test("state uses passed in object", () => {
+            const genesisBlock = Block.getGenesisBlock({
+                abc: 123
+            });
 
-        expect(genesisBlock.previousHash).toBeNull();
+            expect(genesisBlock.state).toMatchObject({
+                abc: 123
+            });
+        });
+
+        test("timestamp uses current time", () => {
+            const genesisBlock = Block.getGenesisBlock();
+            const laterTime = Date.now() + 1;
+
+            expect(genesisBlock.timestamp).toBeLessThan(laterTime);
+        });
+
+        test("previousHash is null", () => {
+            const genesisBlock = Block.getGenesisBlock();
+
+            expect(genesisBlock.previousHash).toBeNull();
+        });
     });
 });
