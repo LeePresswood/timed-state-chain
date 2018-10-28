@@ -26,40 +26,6 @@ module.exports.Block = class {
         ).toString();
     }
 
-    static isChainValid(block) {
-        //Genesis block check.
-        if (block && block.index === 0 && block.calculateHash() === block.hash) {
-            return true;
-        }
-
-        //Empty/End of chain.
-        if (!block) {
-            return true;
-        }
-
-        //Stray block.
-        if (!block.previous) {
-            return false;
-        }
-
-        //Tampered previous block.
-        if (block.previous.calculateHash() !== block.previous.hash) {
-            return false;
-        }
-
-        //Tampered previous hash.
-        if (block.previous.calculateHash() !== block.previousHash) {
-            return false;
-        }
-
-        //Tampered current block.
-        if (block.calculateHash() !== block.hash) {
-            return false;
-        }
-
-        return true && Block.isChainValid(block.next);
-    }
-
     static mineNewBlock(block) {
         if (!block || block instanceof Block === false) {
             return null;
@@ -80,6 +46,45 @@ module.exports.Block = class {
         return new this(0, state);
     }
 };
+
+module.exports.isChainValid = isChainValid;
+
+function isChainValid(block) {
+    //Empty/End of chain.
+    if (!block) {
+        return true;
+    }
+
+    //Genesis block.
+    if (block.index === 0 &&
+        block.previous === null &&
+        block.previousHash === null &&
+        block.calculateHash() === block.hash) {
+        return true && isChainValid(block.next);
+    }
+
+    //Stray block.
+    if (!block.previous) {
+        return false;
+    }
+
+    //Tampered previous block.
+    if (block.previous.calculateHash() !== block.previous.hash) {
+        return false;
+    }
+
+    //Tampered previous hash.
+    if (block.previous.calculateHash() !== block.previousHash) {
+        return false;
+    }
+
+    //Tampered current block.
+    if (block.calculateHash() !== block.hash) {
+        return false;
+    }
+
+    return true && isChainValid(block.next);
+}
 
 // var blockchain = [
 //     getGenesisBlock()

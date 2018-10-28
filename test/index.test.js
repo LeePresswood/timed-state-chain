@@ -1,5 +1,6 @@
 const {
-    Block
+    Block,
+    isChainValid
 } = require('../src/index');
 
 describe("Block", () => {
@@ -202,21 +203,43 @@ describe("Block", () => {
             expect(genesisBlock.previousHash).toBeNull();
         });
     });
+});
 
-    describe("-- isChainValid", () => {
-        test("returns true for chain of genesis block", () => {
-            const chain = Block.getGenesisBlock();
+describe("isChainValid", () => {
+    test("returns true for chain of genesis block", () => {
+        const chain = Block.getGenesisBlock();
 
-            expect(Block.isChainValid(chain)).toBe(true);
-        });
+        expect(isChainValid(chain)).toBe(true);
+    });
 
-        test("returns true for chain of genesis block and new block", () => {
-            const chain = Block.getGenesisBlock();
-            chain.addNewBlock(new Block(1, {
-                abc: 123
-            }));
+    test("returns true for chain of genesis block and new block", () => {
+        const chain = Block.getGenesisBlock();
+        chain.addNewBlock(new Block(1, {
+            abc: 123
+        }));
 
-            expect(Block.isChainValid(chain)).toBe(true);
-        });
+        expect(isChainValid(chain)).toBe(true);
+    });
+
+    test("returns false for chain of tampered genesis block and legitimate new block", () => {
+        const chain = Block.getGenesisBlock();
+        chain.addNewBlock(new Block(1, {
+            abc: 123
+        }));
+
+        chain.state = "Changed the data!";
+
+        expect(isChainValid(chain)).toBe(false);
+    });
+
+    test("returns false for chain of legitimate genesis block and tampered new block", () => {
+        const chain = Block.getGenesisBlock();
+        chain.addNewBlock(new Block(1, {
+            abc: 123
+        }));
+
+        chain.state = "Changed the data!";
+
+        expect(isChainValid(chain)).toBe(false);
     });
 });
