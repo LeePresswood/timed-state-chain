@@ -121,7 +121,7 @@ describe("Block", () => {
         test("hash is string", () => {
             const hash = new Block(1).calculateHash();
 
-            expect(typeof (hash) === "string").toBe(true);
+            expect(typeof hash).toBe("string");
         });
 
         test("hash is length 64", () => {
@@ -144,7 +144,7 @@ describe("Block", () => {
             const hash1 = block1.calculateHash();
             const hash2 = block2.calculateHash();
 
-            expect(hash1 === hash2).toBe(true);
+            expect(hash1).toBe(hash2);
         });
 
         test("hashes of two of different blocks with different data are not equal", () => {
@@ -153,7 +153,50 @@ describe("Block", () => {
             const hash1 = block1.calculateHash();
             const hash2 = block2.calculateHash();
 
-            expect(hash1 === hash2).toBe(false);
+            expect(hash1).not.toBe(hash2);
         });
+    });
+});
+
+describe("getGenesisBlock", () => {
+    test("returns block", () => {
+        const genesisBlock = getGenesisBlock();
+
+        expect(genesisBlock instanceof Block).toBe(true);
+    });
+
+    test("index is 0", () => {
+        const genesisBlock = getGenesisBlock();
+
+        expect(genesisBlock.index).toBe(0);
+    });
+
+    test("state is empty object if none is passed in", () => {
+        const genesisBlock = getGenesisBlock();
+
+        expect(genesisBlock.state).toMatchObject({});
+    });
+
+    test("state uses passed in object", () => {
+        const genesisBlock = getGenesisBlock({
+            abc: 123
+        });
+
+        expect(genesisBlock.state).toMatchObject({
+            abc: 123
+        });
+    });
+
+    test("timestamp uses current time", () => {
+        const genesisBlock = getGenesisBlock();
+        const laterTime = Date.now() + 1;
+
+        expect(genesisBlock.timestamp).toBeLessThan(laterTime);
+    });
+
+    test("previousHash is null", () => {
+        const genesisBlock = getGenesisBlock();
+
+        expect(genesisBlock.previousHash).toBeNull();
     });
 });

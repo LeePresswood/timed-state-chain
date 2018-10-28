@@ -25,5 +25,5 @@ module.exports.Block = class {
 };
 
 module.exports.getGenesisBlock = (state) => {
-    return new Block(0, state)
+    return new this.Block(0, state)
 };

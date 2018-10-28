@@ -18,13 +18,15 @@ module.exports = {
   clearMocks: true,
 
   // Indicates whether the coverage information should be collected while executing the test
-  // collectCoverage: false,
+  // collectCoverage: true,
 
   // An array of glob patterns indicating a set of files for which coverage information should be collected
-  // collectCoverageFrom: null,
+  // collectCoverageFrom: [
+  //   "src/**/*.js"
+  // ],
 
   // The directory where Jest should output its coverage files
-  coverageDirectory: "coverage",
+  // coverageDirectory: "coverage",
 
   // An array of regexp pattern strings used to skip coverage collection
   // coveragePathIgnorePatterns: [
@@ -34,13 +36,21 @@ module.exports = {
   // A list of reporter names that Jest uses when writing coverage reports
   // coverageReporters: [
   //   "json",
-  //   "text",
-  //   "lcov",
-  //   "clover"
+  //   "html",
+  // "text",
+  // "lcov",
+  // "clover"
   // ],
 
   // An object that configures minimum threshold enforcement for coverage results
-  // coverageThreshold: null,
+  // coverageThreshold: {
+  //   "global": {
+  //     "branches": 95,
+  //     "functions": 95,
+  //     "lines": 95,
+  //     "statements": 95
+  //   }
+  // },
 
   // Make calling deprecated APIs throw helpful error messages
   // errorOnDeprecated: false,
