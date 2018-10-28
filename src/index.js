@@ -26,24 +26,38 @@ module.exports.Block = class {
         ).toString();
     }
 
-    static isValid(block) {
-        if (!block || block.index !== 0 && !block.previous) {
+    static isChainValid(block) {
+        //Genesis block check.
+        if (block && block.index === 0 && block.calculateHash() === block.hash) {
+            return true;
+        }
+
+        //Empty/End of chain.
+        if (!block) {
+            return true;
+        }
+
+        //Stray block.
+        if (!block.previous) {
             return false;
         }
 
-        if (block.index !== 0 && block.previous.calculateHash() !== block.previousHash) {
+        //Tampered previous block.
+        if (block.previous.calculateHash() !== block.previous.hash) {
             return false;
         }
 
-        if (block.index !== 0 && block.previous.calculateHash() !== block.previous.hash) {
+        //Tampered previous hash.
+        if (block.previous.calculateHash() !== block.previousHash) {
             return false;
         }
 
-        if (block.index !== 0 && block.calculateHash() !== block.hash) {
+        //Tampered current block.
+        if (block.calculateHash() !== block.hash) {
             return false;
         }
 
-        return true;
+        return true && Block.isChainValid(block.next);
     }
 
     static mineNewBlock(block) {
@@ -58,7 +72,7 @@ module.exports.Block = class {
         while (block.hash.startsWith("000"));
     }
 
-    static addNewBlock(block) {
+    addNewBlock(block) {
 
     }
 

@@ -202,4 +202,21 @@ describe("Block", () => {
             expect(genesisBlock.previousHash).toBeNull();
         });
     });
+
+    describe("-- isChainValid", () => {
+        test("returns true for chain of genesis block", () => {
+            const chain = Block.getGenesisBlock();
+
+            expect(Block.isChainValid(chain)).toBe(true);
+        });
+
+        test("returns true for chain of genesis block and new block", () => {
+            const chain = Block.getGenesisBlock();
+            chain.addNewBlock(new Block(1, {
+                abc: 123
+            }));
+
+            expect(Block.isChainValid(chain)).toBe(true);
+        });
+    });
 });
