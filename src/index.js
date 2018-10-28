@@ -31,15 +31,15 @@ module.exports.Block = class {
             return false;
         }
 
-        if (block.previous.calculateHash() !== block.previousHash) {
+        if (block.index !== 0 && block.previous.calculateHash() !== block.previousHash) {
             return false;
         }
 
-        if (block.previous.calculateHash() !== block.previous.hash) {
+        if (block.index !== 0 && block.previous.calculateHash() !== block.previous.hash) {
             return false;
         }
 
-        if (block.calculateHash() !== block.hash) {
+        if (block.index !== 0 && block.calculateHash() !== block.hash) {
             return false;
         }
 
@@ -47,6 +47,18 @@ module.exports.Block = class {
     }
 
     static mineNewBlock(block) {
+        if (!block || block instanceof Block === false) {
+            return null;
+        }
+
+        do {
+            block.nonce++;
+            block.hash = block.calculateHash();
+        }
+        while (block.hash.startsWith("000"));
+    }
+
+    static addNewBlock(block) {
 
     }
 
