@@ -158,7 +158,11 @@ describe("Block", () => {
     });
 
     describe("-- mineNewBlock", () => {
+        test("returns block", () => {
+            const genesisBlock = Block.getGenesisBlock();
 
+            expect(genesisBlock instanceof Block).toBe(true);
+        });
     });
 
     describe("-- getGenesisBlock", () => {
@@ -166,6 +170,13 @@ describe("Block", () => {
             const genesisBlock = Block.getGenesisBlock();
 
             expect(genesisBlock instanceof Block).toBe(true);
+        });
+
+        test("block is mined", () => {
+            const genesisBlock = Block.getGenesisBlock();
+            console.log(genesisBlock);
+
+            expect(genesisBlock.hash.startsWith("0")).toBe(true);
         });
 
         test("index is 0", () => {
@@ -245,6 +256,52 @@ describe("Block", () => {
             chain.addNewBlock(newBlock);
 
             expect(chain.next).toBe(newBlock);
+        });
+
+        test("chain is valid", () => {
+            const chain = Block.getGenesisBlock();
+            const newBlock = new Block(1, {
+                abc: 123
+            })
+            chain.addNewBlock(newBlock);
+
+            expect(isChainValid(chain)).toBe(true);
+        });
+
+        test("can add to chain of longer length", () => {
+            const chain = Block.getGenesisBlock();
+            const newBlock = new Block(1, {
+                abc: 123
+            })
+            chain.addNewBlock(newBlock);
+            chain.addNewBlock(newBlock);
+            chain.addNewBlock(newBlock);
+            chain.addNewBlock(newBlock);
+            chain.addNewBlock(newBlock);
+
+            let head = chain;
+            let next = chain.next;
+            while (head && next) {
+                expect(head.next).toBe(next);
+                expect(head.hash).toBe(next.previousHash);
+
+                head = head.next;
+                next = next ? next.next : null;
+            }
+        });
+
+        test("long chain is valid", () => {
+            const chain = Block.getGenesisBlock();
+            const newBlock = new Block(1, {
+                abc: 123
+            })
+            chain.addNewBlock(newBlock);
+            chain.addNewBlock(newBlock);
+            chain.addNewBlock(newBlock);
+            chain.addNewBlock(newBlock);
+            chain.addNewBlock(newBlock);
+
+            expect(isChainValid(chain)).toBe(true);
         });
     });
 });

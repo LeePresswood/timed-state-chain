@@ -32,36 +32,30 @@ module.exports.Block = class {
             this.next = this.next.addNewBlock(block);
         }
 
-        //Only add valid block to a valid chain.
-        if (isChainValid(this) && isChainValid(block)) {
-            //Current block points to new block and recalculate hash.
-            this.next = block;
-            this.hash = this.calculateHash();
+        //New block points to previous block.
+        block.previous = this;
+        block.previousHash = this.hash;
+        block.next = null;
 
-            //New block points to previous block and calculates its hash.
-            block.previous = this;
-            block.previousHash = this.hash;
-            block.next = null;
-            block.hash = block.calculateHash();
-        }
+        //Current block points to new block.
+        this.next = block.mineNewBlock();
 
         return this;
     }
 
-    static mineNewBlock(block) {
-        if (!block || block instanceof Block === false) {
-            return null;
-        }
-
+    mineNewBlock() {
+        this.nonce = 0;
         do {
-            block.nonce++;
-            block.hash = block.calculateHash();
+            this.nonce++;
+            this.hash = this.calculateHash();
         }
-        while (block.hash.startsWith("000"));
+        while (!this.hash.startsWith("0"));
+
+        return this;
     }
 
     static getGenesisBlock(state) {
-        return new this(0, state);
+        return new this(0, state).mineNewBlock();
     }
 };
 
