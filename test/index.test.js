@@ -1,6 +1,6 @@
 const {
     Block,
-    isChainValid
+    isChainValid,
 } = require('../src/index');
 
 describe("Block", () => {
@@ -203,6 +203,50 @@ describe("Block", () => {
             expect(genesisBlock.previousHash).toBeNull();
         });
     });
+
+    describe("-- addNewBlock", () => {
+        test("sets next block value for genesis block", () => {
+            const chain = Block.getGenesisBlock();
+            const newBlock = new Block(1, {
+                abc: 123
+            })
+            chain.addNewBlock(newBlock);
+
+            expect(chain.next).not.toBeNull();
+            expect(chain.next.index).toBe(1);
+            expect(chain.next.state.abc).toBe(123);
+        });
+
+        test("previousHash of next block is current block's hash", () => {
+            const chain = Block.getGenesisBlock();
+            const newBlock = new Block(1, {
+                abc: 123
+            })
+            chain.addNewBlock(newBlock);
+
+            expect(chain.next.previousHash).toBe(chain.hash);
+        });
+
+        test("previous of next block is current block", () => {
+            const chain = Block.getGenesisBlock();
+            const newBlock = new Block(1, {
+                abc: 123
+            })
+            chain.addNewBlock(newBlock);
+
+            expect(chain.next.previous).toBe(chain);
+        });
+
+        test("next of current block is next block", () => {
+            const chain = Block.getGenesisBlock();
+            const newBlock = new Block(1, {
+                abc: 123
+            })
+            chain.addNewBlock(newBlock);
+
+            expect(chain.next).toBe(newBlock);
+        });
+    });
 });
 
 describe("isChainValid", () => {
@@ -238,7 +282,7 @@ describe("isChainValid", () => {
             abc: 123
         }));
 
-        chain.state = "Changed the data!";
+        chain.next.state = "Changed the data!";
 
         expect(isChainValid(chain)).toBe(false);
     });
