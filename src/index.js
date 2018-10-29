@@ -3,11 +3,11 @@ const {
 } = require("crypto-js");
 
 class Block {
-    constructor(state, index = 0, previous = null, previousHash = null) {
+    constructor(state, index = 0, previous = null) {
         this.state = state;
         this.index = index;
-        this.previousHash = previousHash;
-        this.previous = null;
+        this.previous = previous;
+        this.previousHash = previous && previous.calculateHash() || null;
 
         this.timestamp = Date.now();
         this.next = null;
@@ -26,24 +26,6 @@ class Block {
         ).toString();
     }
 
-    addNewBlock(state, index = 0) {
-        //Only add to end of chain.
-        if (this.next !== null) {
-            this.next = this.next.addNewBlock(block);
-        }
-
-        //New block points to previous block.
-        let block = new Block(state, index);
-        block.previous = this;
-        block.previousHash = this.hash;
-        block.next = null;
-
-        //Current block points to new block.
-        this.next = block.mineNewBlock();
-
-        return this;
-    }
-
     mineNewBlock() {
         this.nonce = 0;
         do {
@@ -53,10 +35,6 @@ class Block {
         while (!this.hash.startsWith("0"));
 
         return this;
-    }
-
-    static getGenesisBlock(state) {
-        return new this(0, state).mineNewBlock();
     }
 };
 
@@ -114,4 +92,10 @@ module.exports.startChain = (state) => new Block(state);
  * "chain" should be an already-started blockchain. (Hint: Use startChain()
  * to start a new chain.)
  */
-module.exports.addToChain = (state, chain) => chain.addNewBlock(state);
+module.exports.addToChain = (state, chain, index = 1) => {
+    if (chain.next === null) {
+        chain.next = new Block(state, index, chain);
+        return;
+    }
+    this.addToChain(state, chain.next, index + 1);
+};
