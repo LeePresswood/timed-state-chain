@@ -3,16 +3,16 @@ const {
 } = require("crypto-js");
 
 class Block {
-    constructor(index, state = {}, timestamp = Date.now(), previousHash = null) {
-        this.index = index;
+    constructor(state, index = 0, previous = null, previousHash = null) {
         this.state = state;
-        this.timestamp = timestamp;
+        this.index = index;
         this.previousHash = previousHash;
-
         this.previous = null;
-        this.next = null;
 
+        this.timestamp = Date.now();
+        this.next = null;
         this.nonce = 0;
+
         this.hash = this.calculateHash();
     }
 
@@ -33,6 +33,7 @@ class Block {
         }
 
         //New block points to previous block.
+        let block = new Block(state, index);
         block.previous = this;
         block.previousHash = this.hash;
         block.next = null;
@@ -95,11 +96,22 @@ function isChainValid(block) {
 
 
 
+/**
+ * Get genesis block of blockchain using the given state.
+ *
+ * "state" should be key-value map representing the state of an object
+ * at a given time.
+ */
+module.exports.startChain = (state) => new Block(state);
 
-module.exports.getGenesisBlock = function (state) {
-    return new Block(0, state);
-};
-
-module.exports.addToChain = function (state, chain) {
-    return chain.addNewBlock(state);
-};
+/**
+ * Add the passed state to the passed chain. Blocks are added to the
+ * end of the chain, and the genesis block is returned.
+ *
+ * "state" should be key - value map representing the state of an object
+ * at a given time.
+ *
+ * "chain" should be an already-started blockchain. (Hint: Use startChain()
+ * to start a new chain.)
+ */
+module.exports.addToChain = (state, chain) => chain.addNewBlock(state);
