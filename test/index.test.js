@@ -180,4 +180,10 @@ describe("blockchain properties", () => {
         expect(block1.state.aaa).toBe(321);
         expect(block2.state.xyz).toBe(999);
     });
+
+    test("hashes are mined", () => {
+        expect(block0.hash[0]).toBe("0");
+        expect(block1.hash[0]).toBe("0");
+        expect(block2.hash[0]).toBe("0");
+    });
 });
