@@ -7,13 +7,11 @@ class Block {
         this.state = state;
         this.index = index;
         this.previous = previous;
-        this.previousHash = previous && previous.calculateHash() || null;
 
+        this.previousHash = previous && previous.calculateHash() || null;
         this.timestamp = Date.now();
         this.next = null;
-        this.nonce = 0;
-
-        this.hash = this.calculateHash();
+        this.mineNewBlock();
     }
 
     calculateHash() {
@@ -33,8 +31,6 @@ class Block {
             this.hash = this.calculateHash();
         }
         while (!this.hash.startsWith("0"));
-
-        return this;
     }
 };
 
