@@ -2,7 +2,7 @@ const {
     SHA256
 } = require("crypto-js");
 
-module.exports.Block = class {
+class Block {
     constructor(index, state = {}, timestamp = Date.now(), previousHash = null) {
         this.index = index;
         this.state = state;
@@ -26,7 +26,7 @@ module.exports.Block = class {
         ).toString();
     }
 
-    addNewBlock(block) {
+    addNewBlock(state, index = 0) {
         //Only add to end of chain.
         if (this.next !== null) {
             this.next = this.next.addNewBlock(block);
@@ -92,3 +92,14 @@ function isChainValid(block) {
 
     return true && isChainValid(block.next);
 }
+
+
+
+
+module.exports.getGenesisBlock = function (state) {
+    return new Block(0, state);
+};
+
+module.exports.addToChain = function (state, chain) {
+    return chain.addNewBlock(state);
+};
