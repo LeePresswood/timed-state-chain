@@ -141,6 +141,7 @@ describe("functions", () => {
             let chain = startChain({
                 abc: 123
             });
+
             let isValid = isChainValid(chain);
 
             expect(isValid).toBe(true);
@@ -156,6 +157,7 @@ describe("functions", () => {
             addToChain({
                 xyz: 999
             }, chain);
+
             let isValid = isChainValid(chain);
 
             expect(isValid).toBe(true);
@@ -166,6 +168,7 @@ describe("functions", () => {
                 abc: 123
             });
             chain.index = 30;
+
             let isValid = isChainValid(chain);
 
             expect(isValid).toBe(false);
@@ -176,6 +179,7 @@ describe("functions", () => {
                 abc: 123
             });
             chain.state.abc = 111;
+
             let isValid = isChainValid(chain);
 
             expect(isValid).toBe(false);
@@ -187,6 +191,7 @@ describe("functions", () => {
             });
 
             chain.timestamp = Date.now() + 100;
+
             let isValid = isChainValid(chain);
 
             expect(isValid).toBe(false);
@@ -204,6 +209,7 @@ describe("functions", () => {
             }, chain);
 
             chain.next.index = 100;
+
             let isValid = isChainValid(chain);
 
             expect(isValid).toBe(false);
@@ -221,6 +227,7 @@ describe("functions", () => {
             }, chain);
 
             chain.next.state.aaa = 100;
+
             let isValid = isChainValid(chain);
 
             expect(isValid).toBe(false);
@@ -238,6 +245,7 @@ describe("functions", () => {
             }, chain);
 
             chain.next.state.abc = 123;
+
             let isValid = isChainValid(chain);
 
             expect(isValid).toBe(false);
@@ -256,6 +264,7 @@ describe("functions", () => {
         }, chain);
 
         chain.next.timestamp = Date.now() + 100;
+
         let isValid = isChainValid(chain);
 
         expect(isValid).toBe(false);
@@ -274,6 +283,7 @@ describe("functions", () => {
 
         chain.next.timestamp = Date.now() + 100;
         chain.next.hash = chain.next.calculateHash();
+
         let isValid = isChainValid(chain);
 
         expect(isValid).toBe(false);
@@ -293,6 +303,7 @@ describe("functions", () => {
         chain.next.timestamp = Date.now() + 100;
         chain.next.hash = chain.next.calculateHash();
         chain.next.next.previousHash = chain.next.calculateHash();
+
         let isValid = isChainValid(chain);
 
         expect(isValid).toBe(false);
@@ -310,9 +321,39 @@ describe("functions", () => {
         }, chain);
 
         chain.timestamp = Date.now() + 100;
+        chain.next.state.aaa = "Tampering is bad!";
+        chain.next.next.index = 100;
         chain.hash = chain.calculateHash();
         chain.next.previousHash = chain.calculateHash();
+        chain.next.hash = chain.next.calculateHash();
         chain.next.next.previousHash = chain.next.calculateHash();
+        chain.next.next.hash = chain.next.next.calculateHash();
+
+        let isValid = isChainValid(chain);
+
+        expect(isValid).toBe(false);
+    });
+
+    test("tryhard (with mining) tampering is not valid", () => {
+        let chain = startChain({
+            abc: 123
+        });
+        addToChain({
+            aaa: 321
+        }, chain);
+        addToChain({
+            xyz: 999
+        }, chain);
+
+        chain.timestamp = Date.now() + 100;
+        chain.next.state.aaa = "Tampering is bad!";
+        chain.next.next.index = 100;
+        chain.hash = chain.mineNewBlock();
+        chain.next.previousHash = chain.mineNewBlock();
+        chain.next.hash = chain.next.mineNewBlock();
+        chain.next.next.previousHash = chain.next.mineNewBlock();
+        chain.next.next.hash = chain.next.next.mineNewBlock();
+
         let isValid = isChainValid(chain);
 
         expect(isValid).toBe(false);

@@ -25,6 +25,12 @@ class Block {
     }
 
     mineNewBlock() {
+        //You should only be allowed to mine a block once.
+        //To protect, let's just return the current hash if it's not null.
+        if (this.hash) {
+            return this.hash;
+        }
+
         let calculatedHash = "";
         this.nonce = 0;
         do {
@@ -52,6 +58,11 @@ module.exports.isChainValid = (chain) => {
     //Empty/End of chain.
     if (!chain) {
         return true;
+    }
+
+    //Unmined hash.
+    if (!chain.hash || chain.hash.startsWith("0") === false) {
+        return false;
     }
 
     //Tampered current block.
