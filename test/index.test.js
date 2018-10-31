@@ -180,6 +180,142 @@ describe("functions", () => {
 
             expect(isValid).toBe(false);
         });
+
+        test("tampered genesis block timestamp is not valid", () => {
+            let chain = startChain({
+                abc: 123
+            });
+
+            chain.timestamp = Date.now() + 100;
+            let isValid = isChainValid(chain);
+
+            expect(isValid).toBe(false);
+        });
+
+        test("tampered regular chain index is not valid", () => {
+            let chain = startChain({
+                abc: 123
+            });
+            addToChain({
+                aaa: 321
+            }, chain);
+            addToChain({
+                xyz: 999
+            }, chain);
+
+            chain.next.index = 100;
+            let isValid = isChainValid(chain);
+
+            expect(isValid).toBe(false);
+        });
+
+        test("tampered regular chain state is not valid", () => {
+            let chain = startChain({
+                abc: 123
+            });
+            addToChain({
+                aaa: 321
+            }, chain);
+            addToChain({
+                xyz: 999
+            }, chain);
+
+            chain.next.state.aaa = 100;
+            let isValid = isChainValid(chain);
+
+            expect(isValid).toBe(false);
+        });
+
+        test("tampered regular chain addition to state is not valid", () => {
+            let chain = startChain({
+                abc: 123
+            });
+            addToChain({
+                aaa: 321
+            }, chain);
+            addToChain({
+                xyz: 999
+            }, chain);
+
+            chain.next.state.abc = 123;
+            let isValid = isChainValid(chain);
+
+            expect(isValid).toBe(false);
+        });
+    });
+
+    test("tampered regular chain timestamp is not valid", () => {
+        let chain = startChain({
+            abc: 123
+        });
+        addToChain({
+            aaa: 321
+        }, chain);
+        addToChain({
+            xyz: 999
+        }, chain);
+
+        chain.next.timestamp = Date.now() + 100;
+        let isValid = isChainValid(chain);
+
+        expect(isValid).toBe(false);
+    });
+
+    test("tampered regular chain hash is not valid", () => {
+        let chain = startChain({
+            abc: 123
+        });
+        addToChain({
+            aaa: 321
+        }, chain);
+        addToChain({
+            xyz: 999
+        }, chain);
+
+        chain.next.timestamp = Date.now() + 100;
+        chain.next.hash = chain.next.calculateHash();
+        let isValid = isChainValid(chain);
+
+        expect(isValid).toBe(false);
+    });
+
+    test("tampered regular chain previousHash is not valid", () => {
+        let chain = startChain({
+            abc: 123
+        });
+        addToChain({
+            aaa: 321
+        }, chain);
+        addToChain({
+            xyz: 999
+        }, chain);
+
+        chain.next.timestamp = Date.now() + 100;
+        chain.next.hash = chain.next.calculateHash();
+        chain.next.next.previousHash = chain.next.calculateHash();
+        let isValid = isChainValid(chain);
+
+        expect(isValid).toBe(false);
+    });
+
+    test("tryhard tampering is not valid", () => {
+        let chain = startChain({
+            abc: 123
+        });
+        addToChain({
+            aaa: 321
+        }, chain);
+        addToChain({
+            xyz: 999
+        }, chain);
+
+        chain.timestamp = Date.now() + 100;
+        chain.hash = chain.calculateHash();
+        chain.next.previousHash = chain.calculateHash();
+        chain.next.next.previousHash = chain.next.calculateHash();
+        let isValid = isChainValid(chain);
+
+        expect(isValid).toBe(false);
     });
 });
 
