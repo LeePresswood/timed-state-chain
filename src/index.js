@@ -11,13 +11,13 @@ class Block {
         this.previousHash = previous && previous.calculateHash() || null;
         this.timestamp = Date.now();
         this.next = null;
-        this.mineNewBlock();
+        this.hash = this.mineNewBlock();
     }
 
     calculateHash() {
         return SHA256(
             this.index +
-            this.state +
+            JSON.stringify(this.state) +
             this.timestamp +
             this.previousHash +
             this.nonce
@@ -25,12 +25,14 @@ class Block {
     }
 
     mineNewBlock() {
+        let calculatedHash = "";
         this.nonce = 0;
         do {
             this.nonce++;
-            this.hash = this.calculateHash();
+            calculatedHash = this.calculateHash();
         }
-        while (!this.hash.startsWith("0"));
+        while (!calculatedHash.startsWith("0"));
+        return calculatedHash;
     }
 };
 

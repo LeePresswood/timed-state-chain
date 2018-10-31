@@ -161,7 +161,17 @@ describe("functions", () => {
             expect(isValid).toBe(true);
         });
 
-        test("tampered genesis block is not valid", () => {
+        test("tampered genesis block index is not valid", () => {
+            let chain = startChain({
+                abc: 123
+            });
+            chain.index = 30;
+            let isValid = isChainValid(chain);
+
+            expect(isValid).toBe(false);
+        });
+
+        test("tampered genesis block state is not valid", () => {
             let chain = startChain({
                 abc: 123
             });
