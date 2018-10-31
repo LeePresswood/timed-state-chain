@@ -1,6 +1,7 @@
 const {
     startChain,
     addToChain,
+    isChainValid,
 } = require('../src/index');
 
 describe("functions", () => {
@@ -132,6 +133,42 @@ describe("functions", () => {
             }, block);
 
             expect(block.next.next.index).toBe(2);
+        });
+    });
+
+    describe("isChainValid", () => {
+        test("genesis block is valid", () => {
+            let chain = startChain({
+                abc: 123
+            });
+            let isValid = isChainValid(chain);
+
+            expect(isValid).toBe(true);
+        });
+
+        test("regular chain is valid", () => {
+            let chain = startChain({
+                abc: 123
+            });
+            addToChain({
+                aaa: 321
+            }, chain);
+            addToChain({
+                xyz: 999
+            }, chain);
+            let isValid = isChainValid(chain);
+
+            expect(isValid).toBe(true);
+        });
+
+        test("tampered genesis block is not valid", () => {
+            let chain = startChain({
+                abc: 123
+            });
+            chain.state.abc = 111;
+            let isValid = isChainValid(chain);
+
+            expect(isValid).toBe(false);
         });
     });
 });
