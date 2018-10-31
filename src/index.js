@@ -36,40 +36,41 @@ class Block {
     }
 };
 
-module.exports.isChainValid = isChainValid;
-
-function isChainValid(block) {
+/**
+ * Validate the passed chain.
+ *
+ * To be considered valid, the head of the chain must have a hash that
+ * matches calculated hash of the current block state. On top of that,
+ * every subsequent block in the chain must meet this same standard
+ * while also having a non-zero index, a previous block reference,
+ * and a previousHash that matches the calculation of the previous
+ * block's hash at the current state of the block.
+ *
+ * Empty chains are assumed to be empty to allow for recursive checking.
+ */
+module.exports.isChainValid = (chain) => {
     //Empty/End of chain.
-    if (!block) {
+    if (!chain) {
         return true;
     }
 
-    //Genesis block.
-    if (block.index === 0 &&
-        block.previous === null &&
-        block.previousHash === null &&
-        block.calculateHash() === block.hash) {
-        return true && isChainValid(block.next);
-    }
-
     //Tampered current block.
-    if (block.calculateHash() !== block.hash) {
+    if (chain.hash !== chain.calculateHash()) {
         return false;
     }
 
-    //Tampered previous block.
-    if (block.previous && block.previous.calculateHash() !== block.previous.hash) {
+    //Tampered index / Missing backward connection data.
+    if (chain.index !== 0 && (!chain.previous || !chain.previousHash)) {
         return false;
     }
 
     //Tampered previous hash.
-    if (block.previous && block.previous.calculateHash() !== block.previousHash) {
+    if (chain.previous && chain.previousHash !== chain.previous.calculateHash()) {
         return false;
     }
 
-    return true && isChainValid(block.next);
-}
-
+    return true && this.isChainValid(chain.next);
+};
 
 
 /**
