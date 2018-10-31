@@ -358,6 +358,40 @@ describe("functions", () => {
 
         expect(isValid).toBe(false);
     });
+
+    test("tryhard (with mining and circumventing mining check) tampering is valid", () => {
+        //Note -- this test effectively requires you to recalculate the entire chain.
+        //It's already awful with three block. Imagine a few thousand (or more).
+        //Couple that with the fact that -- were we to use a longer-lasting mining
+        //algorithm -- there wouldn't be enough time to remine everything.
+        let chain = startChain({
+            abc: 123
+        });
+        addToChain({
+            aaa: 321
+        }, chain);
+        addToChain({
+            xyz: 999
+        }, chain);
+
+        chain.timestamp = Date.now() + 100;
+        chain.next.state.aaa = "Tampering is bad!";
+        chain.next.next.index = 100;
+        chain.hash = null;
+        chain.hash = chain.mineNewBlock();
+        chain.next.previousHash = null;
+        chain.next.previousHash = chain.mineNewBlock();
+        chain.next.hash = null;
+        chain.next.hash = chain.next.mineNewBlock();
+        chain.next.next.previousHash = null;
+        chain.next.next.previousHash = chain.next.mineNewBlock();
+        chain.next.next.hash = null;
+        chain.next.next.hash = chain.next.next.mineNewBlock();
+
+        let isValid = isChainValid(chain);
+
+        expect(isValid).toBe(true);
+    });
 });
 
 describe("blockchain properties", () => {
