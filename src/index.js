@@ -49,6 +49,24 @@ module.exports.Block = class Block {
     }
 
     /**
+     * Add the passed state to the passed chain. Blocks are added to the
+     * end of the chain, and the genesis block is returned.
+     *
+     * "state" should be key - value map representing the state of an object
+     * at a given time.
+     *
+     * "chain" should be an already-started blockchain. (Hint: Use startChain()
+     * to start a new chain.)
+     */
+    push(state, index = 1) {
+        if (this.next === null) {
+            this.next = new Block(state, index, this);
+            return;
+        }
+        this.next.push(state, index + 1);
+    }
+
+    /**
      * Validate the passed chain.
      *
      * To be considered valid, the head of the chain must have a hash that
@@ -88,23 +106,5 @@ module.exports.Block = class Block {
 
         //Not end of chain. Check validity of next block.
         return true && this.next.isValid();
-    }
-
-    /**
-     * Add the passed state to the passed chain. Blocks are added to the
-     * end of the chain, and the genesis block is returned.
-     *
-     * "state" should be key - value map representing the state of an object
-     * at a given time.
-     *
-     * "chain" should be an already-started blockchain. (Hint: Use startChain()
-     * to start a new chain.)
-     */
-    push(state, index = 1) {
-        if (this.next === null) {
-            this.next = new Block(state, index, this);
-            return;
-        }
-        this.next.push(state, index + 1);
     }
 };
