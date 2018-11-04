@@ -2,7 +2,7 @@ const {
     SHA256
 } = require("crypto-js");
 
-module.exports.Block = class {
+module.exports.Block = class Block {
 
     /**
      * Get genesis block of blockchain using the given state.
@@ -99,11 +99,11 @@ module.exports.Block = class {
      * "chain" should be an already-started blockchain. (Hint: Use startChain()
      * to start a new chain.)
      */
-    addToChain(state, chain, index = 1) {
-        if (chain.next === null) {
-            chain.next = new Block(state, index, chain);
+    push(state, index = 1) {
+        if (this.next === null) {
+            this.next = new Block(state, index, this);
             return;
         }
-        this.addToChain(state, chain.next, index + 1);
+        this.next.push(state, index + 1);
     }
 };

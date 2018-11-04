@@ -29,14 +29,14 @@ describe("Block", () => {
         });
     });
 
-    describe("addToChain", () => {
+    describe("push", () => {
         test("returns type of Block", () => {
             let block = new Block({
                 abc: 123
             });
-            addToChain({
+            block.push({
                 aaa: 321
-            }, block);
+            });
 
             expect(block).toHaveProperty("state");
             expect(block).toHaveProperty("index");
@@ -61,9 +61,9 @@ describe("Block", () => {
             let block = new Block({
                 abc: 123
             });
-            addToChain({
+            block.push({
                 aaa: 321
-            }, block);
+            });
 
             expect(block.next).not.toBeNull();
             expect(block.next.next).toBeNull();
@@ -73,9 +73,9 @@ describe("Block", () => {
             let block = new Block({
                 abc: 123
             });
-            addToChain({
+            block.push({
                 aaa: 321
-            }, block);
+            });
 
             expect(block.index).toBe(0);
         });
@@ -84,9 +84,9 @@ describe("Block", () => {
             let block = new Block({
                 abc: 123
             });
-            addToChain({
+            block.push({
                 aaa: 321
-            }, block);
+            });
 
             expect(block.next.next).toBeNull();
         });
@@ -95,40 +95,40 @@ describe("Block", () => {
             let block = new Block({
                 abc: 123
             });
-            addToChain({
+            block.push({
                 aaa: 321
-            }, block);
+            });
 
             expect(block.next.next).toBeNull();
 
-            addToChain({
+            block.push({
                 xyz: 999
-            }, block);
+            });
 
             expect(block.next.next).not.toBeNull();
         });
 
         test("second block of blockchain has index 1", () => {
-            let block = startChain({
+            let block = new Block({
                 abc: 123
             });
-            addToChain({
+            block.push({
                 aaa: 321
-            }, block);
+            });
 
             expect(block.next.index).toBe(1);
         });
 
         test("third block of blockchain has index 2", () => {
-            let block = startChain({
+            let block = new Block({
                 abc: 123
             });
-            addToChain({
+            block.push({
                 aaa: 321
-            }, block);
-            addToChain({
+            });
+            block.push({
                 xyz: 999
-            }, block);
+            });
 
             expect(block.next.next.index).toBe(2);
         });
@@ -136,7 +136,7 @@ describe("Block", () => {
 
     describe("isChainValid", () => {
         test("genesis block is valid", () => {
-            let chain = startChain({
+            let chain = new Block({
                 abc: 123
             });
 
