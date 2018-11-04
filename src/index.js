@@ -51,19 +51,18 @@ module.exports.Block = class Block {
     /**
      * Add the passed state to the passed chain. Blocks are added to the
      * end of the chain, and the genesis block is returned.
-     *
-     * "state" should be key - value map representing the state of an object
-     * at a given time.
-     *
-     * "chain" should be an already-started blockchain. (Hint: Use startChain()
-     * to start a new chain.)
+     * @param {*} state State to store on the chain. Can be any type, but works
+     *                  correctly with the library if key-value map.
+     * @param {number} index Optional starting index for the next state. Used
+     *                       recursively (+1 each call) as we go down the chain.
      */
     push(state, index = 1) {
         if (this.next === null) {
             this.next = new Block(state, index, this);
-            return;
+        } else {
+            this.next.push(state, index + 1);
         }
-        this.next.push(state, index + 1);
+        return this;
     }
 
     /**
@@ -106,5 +105,23 @@ module.exports.Block = class Block {
 
         //Not end of chain. Check validity of next block.
         return true && this.next.isValid();
+    }
+
+    /**
+     * Assuming a `state` of a key-value map, get the current value of the passed key.
+     * @param {String} key The value to search for.
+     */
+    getStateOf(key, stateArray = []) {
+        if (this.state.hasOwnProperty(key)) {
+            stateArray.push(this.state[key]);
+        }
+
+        //If we're at the end of the chain, we no longer want to recursively call this method.
+        //Instead, we want to return the latest value of our state.
+        if (!this.next) {
+            return stateArray.pop();
+        }
+
+        return this.next.getStateOf(key, stateArray);
     }
 };
