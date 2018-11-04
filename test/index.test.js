@@ -134,189 +134,191 @@ describe("Block", () => {
         });
     });
 
-    describe("isChainValid", () => {
+    describe("isValid", () => {
         test("genesis block is valid", () => {
             let chain = new Block({
                 abc: 123
             });
 
-            let isValid = isChainValid(chain);
+            let isValid = chain.isValid();
 
             expect(isValid).toBe(true);
         });
 
         test("regular chain is valid", () => {
-            let chain = startChain({
+            let chain = new Block({
                 abc: 123
             });
-            addToChain({
+            chain.push({
                 aaa: 321
-            }, chain);
-            addToChain({
+            });
+            chain.push({
                 xyz: 999
-            }, chain);
+            });
 
-            let isValid = isChainValid(chain);
+            let isValid = chain.isValid();
 
             expect(isValid).toBe(true);
         });
 
         test("tampered genesis block index is not valid", () => {
-            let chain = startChain({
+            let chain = new Block({
                 abc: 123
             });
+
             chain.index = 30;
 
-            let isValid = isChainValid(chain);
+            let isValid = chain.isValid();
 
             expect(isValid).toBe(false);
         });
 
         test("tampered genesis block state is not valid", () => {
-            let chain = startChain({
+            let chain = new Block({
                 abc: 123
             });
+
             chain.state.abc = 111;
 
-            let isValid = isChainValid(chain);
+            let isValid = chain.isValid();
 
             expect(isValid).toBe(false);
         });
 
         test("tampered genesis block timestamp is not valid", () => {
-            let chain = startChain({
+            let chain = new Block({
                 abc: 123
             });
 
             chain.timestamp = Date.now() + 100;
 
-            let isValid = isChainValid(chain);
+            let isValid = chain.isValid();
 
             expect(isValid).toBe(false);
         });
 
         test("tampered regular chain index is not valid", () => {
-            let chain = startChain({
+            let chain = new Block({
                 abc: 123
             });
-            addToChain({
+            chain.push({
                 aaa: 321
-            }, chain);
-            addToChain({
+            });
+            chain.push({
                 xyz: 999
-            }, chain);
+            });
 
             chain.next.index = 100;
 
-            let isValid = isChainValid(chain);
+            let isValid = chain.isValid();
 
             expect(isValid).toBe(false);
         });
 
         test("tampered regular chain state is not valid", () => {
-            let chain = startChain({
+            let chain = new Block({
                 abc: 123
             });
-            addToChain({
+            chain.push({
                 aaa: 321
-            }, chain);
-            addToChain({
+            });
+            chain.push({
                 xyz: 999
-            }, chain);
+            });
 
             chain.next.state.aaa = 100;
 
-            let isValid = isChainValid(chain);
+            let isValid = chain.isValid();
 
             expect(isValid).toBe(false);
         });
 
         test("tampered regular chain addition to state is not valid", () => {
-            let chain = startChain({
+            let chain = new Block({
                 abc: 123
             });
-            addToChain({
+            chain.push({
                 aaa: 321
-            }, chain);
-            addToChain({
+            });
+            chain.push({
                 xyz: 999
-            }, chain);
+            });
 
             chain.next.state.abc = 123;
 
-            let isValid = isChainValid(chain);
+            let isValid = chain.isValid();
 
             expect(isValid).toBe(false);
         });
     });
 
     test("tampered regular chain timestamp is not valid", () => {
-        let chain = startChain({
+        let chain = new Block({
             abc: 123
         });
-        addToChain({
+        chain.push({
             aaa: 321
-        }, chain);
-        addToChain({
+        });
+        chain.push({
             xyz: 999
-        }, chain);
+        });
 
         chain.next.timestamp = Date.now() + 100;
 
-        let isValid = isChainValid(chain);
+        let isValid = chain.isValid();
 
         expect(isValid).toBe(false);
     });
 
     test("tampered regular chain hash is not valid", () => {
-        let chain = startChain({
+        let chain = new Block({
             abc: 123
         });
-        addToChain({
+        chain.push({
             aaa: 321
-        }, chain);
-        addToChain({
+        });
+        chain.push({
             xyz: 999
-        }, chain);
+        });
 
         chain.next.timestamp = Date.now() + 100;
         chain.next.hash = chain.next.calculateHash();
 
-        let isValid = isChainValid(chain);
+        let isValid = chain.isValid();
 
         expect(isValid).toBe(false);
     });
 
     test("tampered regular chain previousHash is not valid", () => {
-        let chain = startChain({
+        let chain = new Block({
             abc: 123
         });
-        addToChain({
+        chain.push({
             aaa: 321
-        }, chain);
-        addToChain({
+        });
+        chain.push({
             xyz: 999
-        }, chain);
+        });
 
         chain.next.timestamp = Date.now() + 100;
         chain.next.hash = chain.next.calculateHash();
         chain.next.next.previousHash = chain.next.calculateHash();
 
-        let isValid = isChainValid(chain);
+        let isValid = chain.isValid();
 
         expect(isValid).toBe(false);
     });
 
     test("tryhard tampering is not valid", () => {
-        let chain = startChain({
+        let chain = new Block({
             abc: 123
         });
-        addToChain({
+        chain.push({
             aaa: 321
-        }, chain);
-        addToChain({
+        });
+        chain.push({
             xyz: 999
-        }, chain);
+        });
 
         chain.timestamp = Date.now() + 100;
         chain.next.state.aaa = "Tampering is bad!";
@@ -327,21 +329,21 @@ describe("Block", () => {
         chain.next.next.previousHash = chain.next.calculateHash();
         chain.next.next.hash = chain.next.next.calculateHash();
 
-        let isValid = isChainValid(chain);
+        let isValid = chain.isValid();
 
         expect(isValid).toBe(false);
     });
 
     test("tryhard (with mining) tampering is not valid", () => {
-        let chain = startChain({
+        let chain = new Block({
             abc: 123
         });
-        addToChain({
+        chain.push({
             aaa: 321
-        }, chain);
-        addToChain({
+        });
+        chain.push({
             xyz: 999
-        }, chain);
+        });
 
         chain.timestamp = Date.now() + 100;
         chain.next.state.aaa = "Tampering is bad!";
@@ -352,7 +354,7 @@ describe("Block", () => {
         chain.next.next.previousHash = chain.next.mineNewBlock();
         chain.next.next.hash = chain.next.next.mineNewBlock();
 
-        let isValid = isChainValid(chain);
+        let isValid = chain.isValid();
 
         expect(isValid).toBe(false);
     });
@@ -362,15 +364,15 @@ describe("Block", () => {
         //It's already awful with three block. Imagine a few thousand (or more).
         //Couple that with the fact that -- were we to use a longer-lasting mining
         //algorithm -- there wouldn't be enough time to remine everything.
-        let chain = startChain({
+        let chain = new Block({
             abc: 123
         });
-        addToChain({
+        chain.push({
             aaa: 321
-        }, chain);
-        addToChain({
+        });
+        chain.push({
             xyz: 999
-        }, chain);
+        });
 
         chain.timestamp = Date.now() + 100;
         chain.next.state.aaa = "Tampering is bad!";
@@ -386,22 +388,22 @@ describe("Block", () => {
         chain.next.next.hash = null;
         chain.next.next.hash = chain.next.next.mineNewBlock();
 
-        let isValid = isChainValid(chain);
+        let isValid = chain.isValid();
 
         expect(isValid).toBe(true);
     });
 });
 
 describe("blockchain properties", () => {
-    let chain = startChain({
+    let chain = new Block({
         abc: 123
     });
-    addToChain({
+    chain.push({
         aaa: 321
-    }, chain);
-    addToChain({
+    });
+    chain.push({
         xyz: 999
-    }, chain);
+    });
 
     let block0 = chain;
     let block1 = chain.next;

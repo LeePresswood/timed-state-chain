@@ -60,33 +60,34 @@ module.exports.Block = class Block {
      *
      * Empty chains are assumed to be empty to allow for recursive checking.
      */
-    isChainValid(chain) {
-        //Empty/End of chain.
-        if (!chain) {
-            return true;
-        }
-
+    isValid() {
         //Unmined hash.
-        if (!chain.hash || chain.hash.startsWith("0") === false) {
+        if (!this.hash || this.hash.startsWith("0") === false) {
             return false;
         }
 
         //Tampered current block.
-        if (chain.hash !== chain.calculateHash()) {
+        if (this.hash !== this.calculateHash()) {
             return false;
         }
 
         //Tampered index / Missing backward connection data.
-        if (chain.index !== 0 && (!chain.previous || !chain.previousHash)) {
+        if (this.index !== 0 && (!this.previous || !this.previousHash)) {
             return false;
         }
 
         //Tampered previous hash.
-        if (chain.previous && chain.previousHash !== chain.previous.calculateHash()) {
+        if (this.previous && this.previousHash !== this.previous.calculateHash()) {
             return false;
         }
 
-        return true && this.isChainValid(chain.next);
+        //End of chain.
+        if (this.next === null) {
+            return true;
+        }
+
+        //Not end of chain. Check validity of next block.
+        return true && this.next.isValid();
     }
 
     /**
