@@ -1,13 +1,11 @@
 const {
-    startChain,
-    addToChain,
-    isChainValid,
+    Block
 } = require('../src/index');
 
-describe("functions", () => {
-    describe("startChain", () => {
+describe("Block", () => {
+    describe("constructor", () => {
         test("returns type of Block", () => {
-            const block = startChain({
+            const block = new Block({
                 abc: 123
             });
 
@@ -23,7 +21,7 @@ describe("functions", () => {
         });
 
         test("head of blockchain points to null", () => {
-            const block = startChain({
+            const block = new Block({
                 abc: 123
             });
 
@@ -33,7 +31,7 @@ describe("functions", () => {
 
     describe("addToChain", () => {
         test("returns type of Block", () => {
-            let block = startChain({
+            let block = new Block({
                 abc: 123
             });
             addToChain({
@@ -60,7 +58,7 @@ describe("functions", () => {
         });
 
         test("head of blockchain does not point to null", () => {
-            let block = startChain({
+            let block = new Block({
                 abc: 123
             });
             addToChain({
@@ -72,7 +70,7 @@ describe("functions", () => {
         });
 
         test("head of blockchain has index 0", () => {
-            let block = startChain({
+            let block = new Block({
                 abc: 123
             });
             addToChain({
@@ -83,7 +81,7 @@ describe("functions", () => {
         });
 
         test("second block of blockchain points to null", () => {
-            let block = startChain({
+            let block = new Block({
                 abc: 123
             });
             addToChain({
@@ -94,7 +92,7 @@ describe("functions", () => {
         });
 
         test("second block of blockchain no longer points to null after adding another block", () => {
-            let block = startChain({
+            let block = new Block({
                 abc: 123
             });
             addToChain({
