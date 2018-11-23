@@ -110,18 +110,30 @@ module.exports.Block = class Block {
     /**
      * Assuming a `state` of a key-value map, get the current value of the passed key.
      * @param {String} key The value to search for.
+     * @returns The most recent value associated with that key.
      */
-    getStateOf(key, stateArray = []) {
+    getCurrentStateOf(key) {
+        const stateArray = getStateArrayOf(key);
+        return stateArray.length > 0 ?
+            stateArray.pop() :
+            null;
+    }
+
+    /**
+     * Assuming a `state` of a key-value map, get each value associated of the passed key.
+     * @param {String} key The value to search for.
+     * @returns Array of states associated with the given key. The start of the array is
+     * the first known instance of that key in the chain. Looking deeper into the array
+     * will give newer state transitions until -- ultimately -- the current state in the
+     * last index of the array.
+     */
+    getStateArrayOf(key, stateArray = []) {
         if (this.state.hasOwnProperty(key)) {
             stateArray.push(this.state[key]);
         }
 
-        //If we're at the end of the chain, we no longer want to recursively call this method.
-        //Instead, we want to return the latest value of our state.
-        if (!this.next) {
-            return stateArray.pop();
-        }
-
-        return this.next.getStateOf(key, stateArray);
+        return this.next ?
+            this.next.getStateArrayOf(key, stateArray) :
+            stateArray || [];
     }
 };
