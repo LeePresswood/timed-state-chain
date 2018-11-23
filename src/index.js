@@ -108,6 +108,29 @@ module.exports.Block = class Block {
     }
 
     /**
+     * @returns The latest state in the chain.
+     */
+    getCurrentState(stateArray = []) {
+        stateArray.push(this.state);
+
+        return getStateArray().pop();
+    }
+
+    /**
+     * @returns Array of states associated with the blockchain. The start of the array is
+     * the first state in the chain. Looking deeper into the array will give newer state
+     * transitions until -- ultimately -- reaching the current state in the last index of
+     * the array.
+     */
+    getStateArray(stateArray = []) {
+        stateArray.push(this.state);
+
+        return this.next ?
+            this.next.getStateArrayOf(key, stateArray) :
+            stateArray || [];
+    }
+
+    /**
      * Assuming a `state` of a key-value map, get the current value of the passed key.
      * @param {String} key The value to search for.
      * @returns The most recent value associated with that key.
@@ -124,27 +147,10 @@ module.exports.Block = class Block {
      * @param {String} key The value to search for.
      * @returns Array of states associated with the given key. The start of the array is
      * the first known instance of that key in the chain. Looking deeper into the array
-     * will give newer state transitions until -- ultimately -- the current state in the
+     * will give newer state transitions until -- ultimately -- reaching the current state in the
      * last index of the array.
      */
     getStateArrayOf(key, stateArray = []) {
-        if (this.state.hasOwnProperty(key)) {
-            stateArray.push(this.state[key]);
-        }
-
-        return this.next ?
-            this.next.getStateArrayOf(key, stateArray) :
-            stateArray || [];
-    }
-
-    /**
-     * Get every state placed upon the chain.
-     * @returns Array of states associated with the given key. The start of the array is
-     * the first known instance of that key in the chain. Looking deeper into the array
-     * will give newer state transitions until -- ultimately -- the current state in the
-     * last index of the array.
-     */
-    getStateArray(key, stateArray = []) {
         if (this.state.hasOwnProperty(key)) {
             stateArray.push(this.state[key]);
         }
