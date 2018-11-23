@@ -392,4 +392,22 @@ describe("Block", () => {
 
         expect(isValid).toBe(true);
     });
+
+    test("changing state of getCurrentState() is invalid", () => {
+        let chain = new Block({
+            abc: 123
+        });
+        chain.push({
+            aaa: 321
+        });
+        chain.push({
+            xyz: 999
+        });
+
+        chain.getCurrentState().xyz = 1000;
+
+        let isValid = chain.isValid();
+
+        expect(isValid).toBe(false);
+    });
 });

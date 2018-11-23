@@ -12,30 +12,38 @@ Importing and instantiating the `Block` class:
 ```javascript
 var Block = require('timed-state-chain').Block;
 
-var var1 = new Block({abc: 123});
+var blockchain = new Block({abc: 123});
 ```
 
 Getting the current state:
 ```javascript
-console.log(var1.getState()); // { abc: 123 }
-console.log(var1.getCurrentStateOf('abc')); // 123
+console.log(blockchain.getCurrentState()); // { abc: 123 }
+console.log(blockchain.getCurrentStateOf('abc')); // 123
+console.log(blockchain.getCurrentStateOf('differentKey')); // undefined
 ```
 
 Mutating the state:
 ```javascript
-var1.push({abc: 111});
-console.log(var1.getCurrentStateOf('abc')); // 111
-console.log(var1.getCurrentStateOf('differentKey')); // undefined
+//Pushing a state with a new key does not change the old key's value.
+blockchain.push({differentKey: 'Different value!'});
+console.log(blockchain.getCurrentStateOf('abc')); // 123
+console.log(blockchain.getCurrentStateOf('differentKey')); // 'Different value!'
 
-var1.push({differentKey: 'Different value!'});
-console.log(var1.getCurrentStateOf('abc')); // 111
-console.log(var1.getCurrentStateOf('differentKey')); // 'Different value!'
+//Pushing a new value for the old key changes the value.
+blockchain.push({abc: 111});
+console.log(blockchain.getCurrentStateOf('abc')); // 111
+console.log(blockchain.getCurrentStateOf('differentKey')); // 'Different value!'
+console.log(blockchain.getCurrentStateOf('thirdKey')); // undefined
 ```
 
 Validating the chain:
 ```javascript
-var1.state.abc = 'Tampering with the data!';
-console.log(var1.isValid()); // false
+//Unchanged chains are valid.
+console.log(blockchain.isValid()); // true
+
+//Changing the state of any segment of the chain invalidates it.
+blockchain.getCurrentState().abc = 'Tampering with the data!';
+console.log(blockchain.isValid()); // false
 ```
 
 ## Methods
