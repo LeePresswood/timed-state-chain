@@ -2,13 +2,13 @@ const {
     Block
 } = require('../src/index');
 
-describe("getStateOf", () => {
+describe("getCurrentStateOf", () => {
     let chain = new Block({
         abc: 123
     });
 
     test("unmutated state should match initial state", () => {
-        let state = chain.getStateOf("abc");
+        let state = chain.getCurrentStateOf("abc");
 
         expect(state).toBe(123);
     });
@@ -18,13 +18,13 @@ describe("getStateOf", () => {
             aaa: 321
         });
 
-        let state = chain.getStateOf("abc");
+        let state = chain.getCurrentStateOf("abc");
 
         expect(state).toBe(123);
     });
 
     test("mutated state should match state if mutations do include our key", () => {
-        let state = chain.getStateOf("aaa");
+        let state = chain.getCurrentStateOf("aaa");
 
         expect(state).toBe(321);
     });
@@ -33,7 +33,7 @@ describe("getStateOf", () => {
         chain.push({
             abc: "Something new!"
         });
-        let state = chain.getStateOf("abc");
+        let state = chain.getCurrentStateOf("abc");
 
         expect(state).toBe("Something new!");
     });
@@ -65,7 +65,7 @@ describe("getStateOf", () => {
         chain.push({
             abc: 0
         });
-        let state = chain.getStateOf("abc");
+        let state = chain.getCurrentStateOf("abc");
 
         expect(state).toBe(0);
     });

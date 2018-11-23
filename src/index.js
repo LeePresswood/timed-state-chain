@@ -111,8 +111,6 @@ module.exports.Block = class Block {
      * @returns The latest state in the chain.
      */
     getCurrentState(stateArray = []) {
-        stateArray.push(this.state);
-
         return getStateArray().pop();
     }
 
@@ -136,7 +134,7 @@ module.exports.Block = class Block {
      * @returns The most recent value associated with that key.
      */
     getCurrentStateOf(key) {
-        const stateArray = getStateArrayOf(key);
+        const stateArray = this.getStateArrayOf(key);
         return stateArray.length > 0 ?
             stateArray.pop() :
             null;

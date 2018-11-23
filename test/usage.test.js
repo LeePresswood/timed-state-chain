@@ -14,9 +14,9 @@ describe("usage", () => {
             xyz: 999
         });
 
-        expect(chain.getStateOf("abc")).toBe(123);
-        expect(chain.getStateOf("aaa")).toBe(321);
-        expect(chain.getStateOf("xyz")).toBe(999);
+        expect(chain.getCurrentStateOf("abc")).toBe(123);
+        expect(chain.getCurrentStateOf("aaa")).toBe(321);
+        expect(chain.getCurrentStateOf("xyz")).toBe(999);
     });
 
     test("can replace chain with individual pushes to the blockchain", () => {
@@ -31,9 +31,9 @@ describe("usage", () => {
             xyz: 999
         });
 
-        expect(chain.getStateOf("abc")).toBe(123);
-        expect(chain.getStateOf("aaa")).toBe(321);
-        expect(chain.getStateOf("xyz")).toBe(999);
+        expect(chain.getCurrentStateOf("abc")).toBe(123);
+        expect(chain.getCurrentStateOf("aaa")).toBe(321);
+        expect(chain.getCurrentStateOf("xyz")).toBe(999);
     });
 
     test("can chain pushes to the blockchain", () => {
@@ -45,9 +45,9 @@ describe("usage", () => {
             xyz: 999
         });
 
-        expect(chain.getStateOf("abc")).toBe(123);
-        expect(chain.getStateOf("aaa")).toBe(321);
-        expect(chain.getStateOf("xyz")).toBe(999);
+        expect(chain.getCurrentStateOf("abc")).toBe(123);
+        expect(chain.getCurrentStateOf("aaa")).toBe(321);
+        expect(chain.getCurrentStateOf("xyz")).toBe(999);
     });
 
     test("can chain pushes to the blockchain after original creation", () => {
@@ -61,8 +61,8 @@ describe("usage", () => {
             xyz: 999
         });
 
-        expect(chain.getStateOf("abc")).toBe(123);
-        expect(chain.getStateOf("aaa")).toBe(321);
-        expect(chain.getStateOf("xyz")).toBe(999);
+        expect(chain.getCurrentStateOf("abc")).toBe(123);
+        expect(chain.getCurrentStateOf("aaa")).toBe(321);
+        expect(chain.getCurrentStateOf("xyz")).toBe(999);
     });
 });

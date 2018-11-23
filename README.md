@@ -18,18 +18,18 @@ var var1 = new Block({abc: 123});
 Getting the current state:
 ```javascript
 console.log(var1.getState()); // { abc: 123 }
-console.log(var1.getStateOf('abc')); // 123
+console.log(var1.getCurrentStateOf('abc')); // 123
 ```
 
 Mutating the state:
 ```javascript
 var1.push({abc: 111});
-console.log(var1.getStateOf('abc')); // 111
-console.log(var1.getStateOf('differentKey')); // undefined
+console.log(var1.getCurrentStateOf('abc')); // 111
+console.log(var1.getCurrentStateOf('differentKey')); // undefined
 
 var1.push({differentKey: 'Different value!'});
-console.log(var1.getStateOf('abc')); // 111
-console.log(var1.getStateOf('differentKey')); // 'Different value!'
+console.log(var1.getCurrentStateOf('abc')); // 111
+console.log(var1.getCurrentStateOf('differentKey')); // 'Different value!'
 ```
 
 Validating the chain:
