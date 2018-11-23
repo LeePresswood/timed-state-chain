@@ -136,4 +136,21 @@ module.exports.Block = class Block {
             this.next.getStateArrayOf(key, stateArray) :
             stateArray || [];
     }
+
+    /**
+     * Get every state placed upon the chain.
+     * @returns Array of states associated with the given key. The start of the array is
+     * the first known instance of that key in the chain. Looking deeper into the array
+     * will give newer state transitions until -- ultimately -- the current state in the
+     * last index of the array.
+     */
+    getStateArray(key, stateArray = []) {
+        if (this.state.hasOwnProperty(key)) {
+            stateArray.push(this.state[key]);
+        }
+
+        return this.next ?
+            this.next.getStateArrayOf(key, stateArray) :
+            stateArray || [];
+    }
 };
