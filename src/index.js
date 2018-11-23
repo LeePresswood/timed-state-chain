@@ -111,7 +111,7 @@ module.exports.Block = class Block {
      * @returns The latest state in the chain.
      */
     getCurrentState(stateArray = []) {
-        return getStateArray().pop();
+        return this.getStateArray().pop();
     }
 
     /**
@@ -124,7 +124,7 @@ module.exports.Block = class Block {
         stateArray.push(this.state);
 
         return this.next ?
-            this.next.getStateArrayOf(key, stateArray) :
+            this.next.getStateArray(stateArray) :
             stateArray || [];
     }
 
