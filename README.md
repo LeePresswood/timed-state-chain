@@ -1,6 +1,8 @@
 # timed-state-chain
 #### An unnecessary debugging library for Javascript.
 
+[![Build Status](https://travis-ci.com/LeePresswood/timed-state-chain.svg?branch=master)](https://travis-ci.com/LeePresswood/timed-state-chain)
+
 ## Description
 `timed-state-chain` is a library that allows you to watch how a variable changes over time. A blockchain was uselessly implemented to achieve this goal for two reasons:
 
