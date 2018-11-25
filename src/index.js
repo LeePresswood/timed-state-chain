@@ -76,14 +76,12 @@ module.exports.Block = class Block {
      *                       recursively (+1 each call) as we go down the chain.
      */
     push(state, index = 1) {
-        if (this.errorFlag) {
-            return this;
-        }
-
-        if (this.next === null) {
-            this.next = new Block(state, index, this);
-        } else {
-            this.next.push(state, index + 1);
+        if (!this.errorFlag) {
+            if (this.next === null) {
+                this.next = new Block(state, index, this);
+            } else {
+                this.next.push(state, index + 1);
+            }
         }
         return this;
     }
@@ -131,10 +129,12 @@ module.exports.Block = class Block {
     }
 
     /**
-     * @returns The latest state in the chain.
+     * @returns The latest state in the chain. Will return null if error flag is set.
      */
     getCurrentState(stateArray = []) {
-        return this.getStateArray().pop();
+        return this.errorFlag ?
+            null :
+            this.getStateArray().pop();
     }
 
     /**
@@ -153,6 +153,7 @@ module.exports.Block = class Block {
 
     /**
      * Assuming a `state` of a key-value map, get the current value of the passed key.
+     * Will return null if error flag is set.
      *
      * @param {String} key The value to search for.
      *
@@ -160,9 +161,9 @@ module.exports.Block = class Block {
      */
     getCurrentStateOf(key) {
         const stateArray = this.getStateArrayOf(key);
-        return stateArray.length > 0 ?
-            stateArray.pop() :
-            null;
+        return this.errorFlag || stateArray.length === 0 ?
+            null :
+            stateArray.pop();
     }
 
     /**
