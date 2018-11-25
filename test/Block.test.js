@@ -37,7 +37,7 @@ describe("Block", () => {
         test("can use undefined as state", () => {
             const block = new Block();
 
-            expect(block.getCurrentState()).toBeUndefined();
+            expect(block.getCurrentState()).toBeNull();
         });
 
         test("can use empty object as state", () => {
@@ -454,6 +454,31 @@ describe("Block", () => {
         });
 
         chain.getCurrentState().xyz = 1000;
+
+        let isValid = chain.isValid();
+
+        expect(isValid).toBe(false);
+    });
+
+    test("invalid state of head is invalid", () => {
+        let chain = new Block(123);
+        chain.push({
+            aaa: 321
+        });
+        chain.push({
+            xyz: 999
+        });
+
+        let isValid = chain.isValid();
+
+        expect(isValid).toBe(false);
+    });
+
+    test("invalid state of body is invalid", () => {
+        let chain = new Block({
+            aaa: 321
+        });
+        chain.push(999);
 
         let isValid = chain.isValid();
 
