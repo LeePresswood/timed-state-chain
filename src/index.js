@@ -7,7 +7,7 @@ module.exports.Block = class Block {
     /**
      * Get genesis block of blockchain using the given state.
      *
-     * "state" should be key-value map representing the state of an object
+     * @param {object} states  The key-value map representing the state of an object
      * at a given time.
      */
     constructor(state, index = 0, previous = null) {
@@ -21,6 +21,9 @@ module.exports.Block = class Block {
         this.hash = this.mineNewBlock();
     }
 
+    /**
+     * @returns The SHA256-encoded string of the block's various data points.
+     */
     calculateHash() {
         return SHA256(
             this.index +
@@ -31,9 +34,13 @@ module.exports.Block = class Block {
         ).toString();
     }
 
+    /**
+     * If a hash is not set, follow proof-of-work algorithm to find the hash. If a hash is set,
+     * simply return the hash.
+     *
+     * @returns A mined hash showing proof-of-work.
+     */
     mineNewBlock() {
-        //You should only be allowed to mine a block once.
-        //To protect, let's just return the current hash if it's not null.
         if (this.hash) {
             return this.hash;
         }
@@ -51,6 +58,7 @@ module.exports.Block = class Block {
     /**
      * Add the passed state to the passed chain. Blocks are added to the
      * end of the chain, and the genesis block is returned.
+     *
      * @param {*} state State to store on the chain. Can be any type, but works
      *                  correctly with the library if key-value map.
      * @param {number} index Optional starting index for the next state. Used
@@ -130,7 +138,9 @@ module.exports.Block = class Block {
 
     /**
      * Assuming a `state` of a key-value map, get the current value of the passed key.
+     *
      * @param {String} key The value to search for.
+     *
      * @returns The most recent value associated with that key.
      */
     getCurrentStateOf(key) {
@@ -142,7 +152,9 @@ module.exports.Block = class Block {
 
     /**
      * Assuming a `state` of a key-value map, get each value associated of the passed key.
+     *
      * @param {String} key The value to search for.
+     *
      * @returns Array of states associated with the given key. The start of the array is
      * the first known instance of that key in the chain. Looking deeper into the array
      * will give newer state transitions until -- ultimately -- reaching the current state in the
