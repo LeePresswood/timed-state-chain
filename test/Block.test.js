@@ -27,6 +27,36 @@ describe("Block", () => {
 
             expect(block.next).toBeNull();
         });
+
+        test("can use null as state", () => {
+            const block = new Block(null);
+
+            expect(block.getCurrentState()).toBeNull();
+        });
+
+        test("can use undefined as state", () => {
+            const block = new Block();
+
+            expect(block.getCurrentState()).toBeUndefined();
+        });
+
+        test("can use empty object as state", () => {
+            const block = new Block({});
+
+            expect(block.getCurrentState()).toMatchObject({});
+        });
+
+        test("can't use number as state", () => {
+            const block = new Block(123);
+
+            expect(block.errorFlag).toBe(true);
+        });
+
+        test("can't use string as state", () => {
+            const block = new Block("Won't work");
+
+            expect(block.errorFlag).toBe(true);
+        });
     });
 
     describe("push", () => {

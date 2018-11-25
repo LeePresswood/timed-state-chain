@@ -11,14 +11,21 @@ module.exports.Block = class Block {
      * at a given time.
      */
     constructor(state, index = 0, previous = null) {
-        this.state = state;
-        this.index = index;
-        this.previous = previous;
+        //We're expecting the `state` parameter to be an object.
+        //Note that this includes null. No reason to block those off. Ultimately,
+        //Usage of the chain will stay the same.
+        if (typeof state === 'object') {
+            this.state = state;
+            this.index = index;
+            this.previous = previous;
 
-        this.previousHash = previous && previous.calculateHash() || null;
-        this.timestamp = Date.now();
-        this.next = null;
-        this.hash = this.mineNewBlock();
+            this.previousHash = previous && previous.calculateHash() || null;
+            this.timestamp = Date.now();
+            this.next = null;
+            this.hash = this.mineNewBlock();
+        } else {
+            this.errorFlag = true;
+        }
     }
 
     /**
