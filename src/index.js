@@ -28,8 +28,6 @@ module.exports.Block = class Block {
 
             this.errorFlag = previous && previous.errorFlag || false;
         } else {
-            console.error("Error flag set. Invalid state passed to constructor.");
-            console.error("Try using a key-value object map.");
             this.errorFlag = true;
         }
     }
@@ -79,12 +77,6 @@ module.exports.Block = class Block {
      */
     push(state, index = 1) {
         if (this.errorFlag) {
-            console.error("Can't push. Reason: Invalid blockchain due to invalid state.");
-            return this;
-        } else if (typeof state !== "object") {
-            console.error("Error flag set. Invalid state passed to constructor.");
-            console.error("Try using a key-value object map.");
-            this.errorFlag = true;
             return this;
         }
 
@@ -135,7 +127,7 @@ module.exports.Block = class Block {
         }
 
         //Not end of chain. Check validity of next block.
-        return true && this.next.isValid();
+        return !this.errorFlag && true && this.next.isValid();
     }
 
     /**

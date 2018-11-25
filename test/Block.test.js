@@ -162,6 +162,25 @@ describe("Block", () => {
 
             expect(block.next.next.index).toBe(2);
         });
+
+        test("head points to null on error flag set.", () => {
+            let block = new Block(123);
+            block.push({
+                aaa: 321
+            });
+
+            expect(block.next).toBeFalsy();
+        });
+
+        test("next block points to null on error flag set.", () => {
+            let block = new Block({
+                aaa: 321
+            });
+            block.push(123);
+
+            expect(block.next).not.toBeFalsy();
+            expect(block.next.next).toBeFalsy();
+        });
     });
 
     describe("isValid", () => {
