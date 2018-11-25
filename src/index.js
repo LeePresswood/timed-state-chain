@@ -133,7 +133,7 @@ module.exports.Block = class Block {
 
         return this.next ?
             this.next.getStateArray(stateArray) :
-            stateArray || [];
+            stateArray;
     }
 
     /**
@@ -167,6 +167,6 @@ module.exports.Block = class Block {
 
         return this.next ?
             this.next.getStateArrayOf(key, stateArray) :
-            stateArray || [];
+            stateArray;
     }
 };
