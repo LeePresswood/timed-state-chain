@@ -23,7 +23,13 @@ module.exports.Block = class Block {
             this.timestamp = Date.now();
             this.next = null;
             this.hash = this.mineNewBlock();
+
+            //Set the error flag on this object if the error flag on the previous object is set.
+
+            this.errorFlag = previous && previous.errorFlag || false;
         } else {
+            console.error("Error flag set. Invalid state passed to constructor.");
+            console.error("Try using a key-value object map.");
             this.errorFlag = true;
         }
     }
@@ -72,6 +78,16 @@ module.exports.Block = class Block {
      *                       recursively (+1 each call) as we go down the chain.
      */
     push(state, index = 1) {
+        if (this.errorFlag) {
+            console.error("Can't push. Reason: Invalid blockchain due to invalid state.");
+            return this;
+        } else if (typeof state !== "object") {
+            console.error("Error flag set. Invalid state passed to constructor.");
+            console.error("Try using a key-value object map.");
+            this.errorFlag = true;
+            return this;
+        }
+
         if (this.next === null) {
             this.next = new Block(state, index, this);
         } else {
@@ -113,9 +129,9 @@ module.exports.Block = class Block {
             return false;
         }
 
-        //End of chain.
+        //End of chain. Check if error flag set for extra validity.
         if (this.next === null) {
-            return true;
+            return !this.errorFlag && true;
         }
 
         //Not end of chain. Check validity of next block.
