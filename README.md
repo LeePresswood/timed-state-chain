@@ -4,10 +4,7 @@
 [![Build Status](https://travis-ci.com/LeePresswood/timed-state-chain.svg?branch=master)](https://travis-ci.com/LeePresswood/timed-state-chain)
 
 ## Description
-`timed-state-chain` is a library that allows you to watch how a variable changes over time. A blockchain was uselessly implemented to achieve this goal for two reasons:
-
-    1. To mimic the needless implementation of blockchain technologies in the contemporary startup, and
-    2. To provide an over-secure tool for testing.
+`timed-state-chain` is a library that allows you to watch how a variable changes over time. We've used a simple blockchain algorithm to ensure a secure, maintained state with the option for lookback over time.
 
 ## Usage
 Importing and instantiating the `Block` class:
